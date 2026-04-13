@@ -56,6 +56,7 @@ model User {
   favorites     Favorite[]
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
+  activityLogs     ActivityLog[]
 }
 
 model Patent {
@@ -78,7 +79,7 @@ model Patent {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  inventor      User          @relation(fields: [inventorId], references: [id])
+  inventor      User          @relation(fields: [inventorId], references: [id], onDelete: Cascade)
   inventorId    String
 
   favorites     Favorite[]
@@ -112,4 +113,14 @@ model Message {
 
   patent    Patent?  @relation(fields: [patentId], references: [id], onDelete: SetNull)
   patentId  String?
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
 }

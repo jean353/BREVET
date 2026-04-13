@@ -61,13 +61,12 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  // Serialize arrays to JSON strings for MySQL storage
   const data = {
     ...body,
     tags:       Array.isArray(body.tags) ? JSON.stringify(body.tags) : body.tags ?? null,
     documents:  Array.isArray(body.documents) ? JSON.stringify(body.documents) : body.documents ?? null,
     inventorId: (session.user as any).id,
-    status:     'DRAFT',
+    status:     body.status || 'PENDING',
   };
 
   const patent = await prisma.patent.create({ data });

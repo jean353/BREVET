@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 type Role = 'BUYER' | 'INVENTOR';
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const defaultRole  = (searchParams.get('role') as Role) ?? 'BUYER';
@@ -128,5 +128,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-muted-foreground">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }

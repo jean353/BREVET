@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { AdminPatentRow } from '@/components/admin/AdminPatentRow';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { ShieldCheck, Clock, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Admin Panel' };
@@ -56,27 +56,8 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      {/* Queue */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <Clock className="w-5 h-5 text-yellow-400" />
-          Pending Review ({pending.length})
-        </h2>
-
-        {pending.length === 0 ? (
-          <div className="glass rounded-2xl p-16 text-center space-y-2">
-            <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto" />
-            <h3 className="text-xl font-semibold">All clear!</h3>
-            <p className="text-muted-foreground">No patents awaiting review.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {pending.map(patent => (
-              <AdminPatentRow key={patent.id} patent={patent as any} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Dashboard Tabs */}
+      <AdminDashboard pendingPatents={pending as any} />
     </div>
   );
 }

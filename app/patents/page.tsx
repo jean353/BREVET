@@ -120,7 +120,9 @@ export default function PatentsPage({ searchParams }: { searchParams: SearchPara
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar filters */}
         <aside className="w-full lg:w-64 shrink-0">
-          <MarketplaceFilters />
+          <Suspense fallback={<div className="p-5 glass rounded-2xl">Loading filters...</div>}>
+            <MarketplaceFilters />
+          </Suspense>
         </aside>
 
         {/* Grid */}
