@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background:        220 26% 8%;
+    --foreground:        213 20% 88%;
+    --card:              222 28% 11%;
+    --card-foreground:   213 20% 88%;
+    --popover:           222 28% 10%;
+    --popover-foreground:213 20% 88%;
+    --primary:           43 55% 55%;
+    --primary-foreground:220 26% 8%;
+    --secondary:         222 20% 18%;
+    --secondary-foreground: 213 20% 88%;
+    --muted:             222 20% 16%;
+    --muted-foreground:  215 15% 55%;
+    --accent:            43 55% 55%;
+    --accent-foreground: 220 26% 8%;
+    --destructive:       0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border:            222 20% 20%;
+    --input:             222 20% 16%;
+    --ring:              43 55% 55%;
+    --radius:            0.625rem;
+
+    --font-inter:     'Inter', sans-serif;
+    --font-dm-serif:  'DM Serif Display', serif;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(11,17,32,0.8) 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-semibold tracking-tight;
+  }
+
+  ::selection {
+    background: rgba(201,168,76,0.3);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+}
+
+@layer components {
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #C9A84C 0%, #F0D080 50%, #C9A84C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glowing gold border */
+  .border-gold-glow {
+    border: 1px solid rgba(201,168,76,0.4);
+    box-shadow: 0 0 24px rgba(201,168,76,0.1), inset 0 1px 0 rgba(201,168,76,0.15);
+  }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s linear infinite;
+  }
+
+  /* Nav link active */
+  .nav-link {
+    @apply relative text-muted-foreground hover:text-foreground transition-colors duration-200;
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-px bg-gold-500 transition-all duration-300;
+  }
+  .nav-link:hover::after,
+  .nav-link.active::after { width: 100%; }
+
+  /* Patent card hover */
+  .patent-card {
+    @apply glass rounded-xl overflow-hidden transition-all duration-300;
+  }
+  .patent-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,168,76,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(201,168,76,0.08);
+  }
+
+  /* Gradient button */
+  .btn-gold {
+    background: linear-gradient(135deg, #C9A84C, #A8853A);
+    @apply text-midnight-900 font-semibold rounded-lg px-5 py-2.5 transition-all duration-200 hover:brightness-110 hover:shadow-lg active:scale-95;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  }
+
+  .btn-outline-gold {
+    @apply border border-gold-500/50 text-gold-400 rounded-lg px-5 py-2.5 transition-all duration-200
+           hover:bg-gold-500/10 hover:border-gold-400 active:scale-95;
+  }
+
+  /* Form input */
+  .input-dark {
+    @apply w-full bg-muted border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50
+           transition-all duration-200;
+  }
+
+  /* Status badge */
+  .badge-status {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full;
+  }
+  
+  /* Section divider */
+  .divider-gold {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+  }
+
+  /* Hero glow */
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in { animation: fade-in 0.5s ease-out both; }
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+}

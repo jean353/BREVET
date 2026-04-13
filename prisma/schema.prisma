@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  INVENTOR
+  BUYER
+  ADMIN
+}
+
+enum PatentStatus {
+  DRAFT
+  PENDING
+  VERIFIED
+  UNDER_CONTRACT
+  REJECTED
+}
+
+enum PatentCategory {
+  TECHNOLOGY
+  BIOTECHNOLOGY
+  CHEMISTRY
+  MECHANICAL
+  ELECTRICAL
+  SOFTWARE
+  MEDICAL
+  ENERGY
+  AEROSPACE
+  CONSUMER
+  OTHER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(BUYER)
+  bio           String?   @db.Text
+  company       String?
+  country       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  patents       Patent[]
+  favorites     Favorite[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+model Patent {
+  id            String        @id @default(cuid())
+  title         String
+  description   String        @db.Text
+  category      PatentCategory
+  status        PatentStatus  @default(DRAFT)
+  price         Float
+  currency      String        @default("USD")
+  country       String
+  filingDate    DateTime?
+  patentNumber  String?
+  tags          String?       @db.Text  // JSON-encoded array (MySQL has no native String[])
+  imageUrl      String?
+  documents     String?       @db.Text  // JSON-encoded array (MySQL has no native String[])
+  techDetails   String?       @db.Text
+  licenseType   String?       // SELL, LICENSE, BOTH
+  views         Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  inventor      User          @relation(fields: [inventorId], references: [id])
+  inventorId    String
+
+  favorites     Favorite[]
+  messages      Message[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  patent    Patent   @relation(fields: [patentId], references: [id], onDelete: Cascade)
+  patentId  String
+
+  @@unique([userId, patentId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  sender    User     @relation("SentMessages",     fields: [senderId],    references: [id])
+  senderId  String
+
+  receiver  User     @relation("ReceivedMessages", fields: [receiverId],  references: [id])
+  receiverId String
+
+  patent    Patent?  @relation(fields: [patentId], references: [id], onDelete: SetNull)
+  patentId  String?
+}
